@@ -1,7 +1,0 @@
-.astronaut {
-    position: absolute;
-    width: 500px; /* Diperbesar dari 220px agar astronot lebih besar */
-    z-index: 2;
-    pointer-events: none;
-    animation: floatAstronaut 6s ease-in-out infinite alternate;
-}

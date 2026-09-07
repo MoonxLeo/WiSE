@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page On Progress</title>
+    <title>Landing Page - WiSE</title>
     <style>
         /* Mengatur dasar halaman */
         * {
@@ -11,22 +11,86 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
-            /* Latar belakang malam pekat */
             background: linear-gradient(135deg, #07070b 0%, #11111a 50%, #171720 100%);
             min-height: 100vh;
             position: relative;
-            overflow: hidden; 
+            overflow-x: hidden; 
+        }
+
+        /* --- ANIMASI LOADING (PRELOADER) --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #07070b;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .preloader-logo {
+            width: 350px;
+            max-width: 80%;
+            animation: pulseLogo 1.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseLogo {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .loader-line {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        .loader-line::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -50%; width: 50%; height: 100%;
+            background: #60efff;
+            box-shadow: 0 0 10px #60efff;
+            animation: slideLine 1.5s infinite ease-in-out;
+        }
+
+        @keyframes slideLine {
+            0% { left: -50%; }
+            100% { left: 100%; }
+        }
+
+        .loading-text {
+            color: #aaaaaa;
+            margin-top: 15px;
+            font-size: 1.1em;
+            letter-spacing: 3px;
+            font-weight: 600;
+            animation: blinkText 1.5s infinite;
+        }
+
+        @keyframes blinkText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         /* --- Latar Belakang Bintang Statis --- */
         .static-stars {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: 0; pointer-events: none;
             background-image: 
                 radial-gradient(1.5px 1.5px at 10% 20%, #ffffff, rgba(0,0,0,0)),
                 radial-gradient(1px 1px at 30% 40%, #e0e0ff, rgba(0,0,0,0)),
@@ -44,28 +108,17 @@
 
         /* --- Bintang Terang (Lens Flare) Realistis dengan Animasi Floating --- */
         .bright-star {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            z-index: 0;
-            pointer-events: none;
-            animation: floatStar 5s ease-in-out infinite alternate;
+            position: absolute; width: 150px; height: 150px; z-index: 0;
+            pointer-events: none; animation: floatStar 5s ease-in-out infinite alternate;
         }
         .bright-star .core {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px; height: 6px;
-            background: #ffffff;
-            border-radius: 50%;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 6px; height: 6px; background: #ffffff; border-radius: 50%;
             box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9), 0 0 30px 10px rgba(180, 200, 255, 0.6);
         }
         .bright-star .rays {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%; height: 1px;
-            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 1px; background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
             box-shadow: 0 0 4px rgba(255,255,255,0.4);
         }
         .bright-star .rays::after {
@@ -73,11 +126,8 @@
             width: 100%; height: 100%; background: inherit; transform: rotate(90deg);
         }
         .bright-star .diagonal-rays {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(45deg);
-            width: 40%; height: 1px;
-            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(45deg);
+            width: 40%; height: 1px; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
         }
         .bright-star .diagonal-rays::after {
             content: ''; position: absolute; top: 0; left: 0;
@@ -96,10 +146,7 @@
 
         /* --- Elemen Bulan dengan Animasi Berputar --- */
         .moon {
-            position: absolute;
-            top: 5%; right: 10%;
-            width: 200px; height: 200px;
-            border-radius: 50%;
+            position: absolute; top: 5%; right: 10%; width: 150px; height: 150px; border-radius: 50%;
             background: 
                 radial-gradient(circle at 30% 30%, transparent 0%, rgba(0,0,0,0.6) 80%),
                 radial-gradient(circle at 40% 60%, #444 0%, transparent 30%),
@@ -108,7 +155,7 @@
                 #888899; 
             box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 255, 255, 0.15); 
             z-index: 0; pointer-events: none; opacity: 0.9;
-            animation: rotateMoon 30s linear infinite; /* Animasi berputar */
+            animation: rotateMoon 30s linear infinite;
         }
 
         @keyframes rotateMoon {
@@ -118,8 +165,7 @@
 
         /* --- Animasi Bintang Jatuh --- */
         .shooting-star-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
         }
         .shooting-star {
             position: absolute; width: 140px; height: 1.5px;
@@ -128,8 +174,7 @@
             animation: shoot var(--duration) infinite linear; animation-delay: var(--delay);
         }
         .shooting-star::after {
-            content: ''; position: absolute; top: 50%; right: 0; 
-            transform: translateY(-50%); width: 5px; height: 5px;
+            content: ''; position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 5px; height: 5px;
             background: #fff; border-radius: 50%; box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.9);
         }
         .star-1 { --angle: 25deg; --start-x: -10%; --start-y: 10%; --duration: 2s; --delay: 0s; }
@@ -144,10 +189,9 @@
             100% { transform: rotate(var(--angle)) translateX(150vw); opacity: 0; }
         }
 
-        /* --- Animasi Partikel Naik (Salju) --- */
+        /* --- Animasi Partikel Salju --- */
         .snow-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
         }
         .snow {
             position: absolute; bottom: -20px; background: #ffffff;
@@ -169,24 +213,19 @@
         /* --- Styling Header --- */
         header {
             position: relative; z-index: 10; display: flex; align-items: center;
-            padding: 25px 50px; background: rgba(0, 0, 0, 0.4); 
+            padding: 20px 50px; background: rgba(0, 0, 0, 0.4); 
             backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .logo-img {
-            height: 45px;
-            width: auto;
-            margin-right: 50px;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 60px; width: auto; cursor: pointer;
+            border-radius: 6px; transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .logo-img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
-        .main-nav { display: flex; gap: 30px; }
+        .main-nav { display: flex; gap: 30px; margin-left: 30px; }
         .login-nav { margin-left: auto; display: flex; }
         nav a { position: relative; padding: 8px 12px; color: #cccccc; text-decoration: none; font-size: 16px; font-weight: 500; transition: color 0.3s ease; cursor: pointer; }
         nav a::before, nav a::after { content: ''; position: absolute; width: 10px; height: 10px; opacity: 0; transition: all 0.3s ease; }
@@ -196,149 +235,116 @@
         nav a:hover::before { top: -4px; left: -4px; opacity: 1; }
         nav a:hover::after { bottom: -4px; right: -4px; opacity: 1; }
 
-        /* --- KONTEN HERO & KARTU LAYANAN --- */
+        /* --- KONTEN HERO --- */
         .hero-section {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            color: white;
-            padding-top: 100px;
+            position: relative; z-index: 1; text-align: center; color: white; padding-top: 80px; padding-bottom: 80px;
         }
 
         .hero-section h1 {
-            font-size: 3em;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            margin-bottom: 10px;
+            font-size: 3.8em; font-weight: 800; letter-spacing: 1.5px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-bottom: 10px;
         }
 
         .hero-section p.subtitle {
-            color: #d1d1d1;
-            font-size: 1.1em;
-            letter-spacing: 0.5px;
-            margin-bottom: 50px;
+            color: #d1d1d1; font-size: 1.4em; letter-spacing: 0.5px; margin-bottom: 60px;
         }
 
-        /* Container Kartu Pilihan */
+        /* --- DESAIN KARTU LAYANAN --- */
         .services-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            flex-wrap: wrap; 
-            max-width: 900px;
-            margin: 0 auto;
+            display: flex; justify-content: center; align-items: center;
+            gap: 40px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;
         }
 
-        /* Desain Kartu (Glassmorphism & Interaktif) */
         .service-card {
-            background: rgba(255, 255, 255, 0.98);
-            width: 220px;
-            height: 160px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            width: 320px; 
+            height: 260px;
+            border-radius: 24px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            padding: 40px 25px;
+            text-align: center;
+            cursor: pointer; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.8); 
+            position: relative; overflow: hidden; 
         }
 
         .service-card svg {
-            width: 60px;
-            height: 60px;
-            color: #1e3a5f; 
-            margin-bottom: 15px;
+            width: 65px; height: 65px; color: #1e3a5f; margin-bottom: 20px; 
             transition: all 0.4s ease;
         }
 
         .service-card h3 {
-            color: #111827;
-            font-size: 20px;
-            font-weight: 800;
-            z-index: 1;
+            color: #111827; font-size: 22px; font-weight: 800; z-index: 1; margin-bottom: 12px;
+        }
+
+        .service-card p.card-desc {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+            font-weight: 500;
         }
 
         .service-card:hover {
-            transform: translateY(-12px) scale(1.03);
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15), 0 0 20px rgba(96, 239, 255, 0.2);
+            transform: translateY(-12px); 
+            background: #ffffff;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.6), 0 0 25px rgba(96, 239, 255, 0.3);
         }
 
         .service-card:hover svg {
-            transform: scale(1.15) rotate(5deg);
-            color: #2563eb; 
+            transform: scale(1.15) translateY(-5px); color: #2563eb; 
         }
 
-        /* --- ELEMEN ASTRONOT DIPERBESAR 2X LIPAT LAGI (760px) --- */
+        /* --- ELEMEN ASTRONOT --- */
         .astronaut {
             position: absolute;
-            width: 700px; /* Diperbesar 2x lipat dari 380px */
-            z-index: -20  ;
-             left: 1200px;
-             top: 452px;
+            width: 800px;
+            z-index: -20;
+            left: 1200px;
+            top: 452px;
             pointer-events: none;
             animation: floatAstronaut 6s ease-in-out infinite alternate;
         }
 
         .astronaut-left {
-            bottom: -80px;
-            left: -80px;
-            transform: rotate(-10deg);
-            animation-delay: 0s;
+            bottom: -80px; left: 10px; transform: rotate(-10deg); animation-delay: 0s;
         }
 
         .astronaut-right {
-            bottom: -80px;
-            right: -80px;
-            transform: rotate(10deg);
-            animation-delay: 3s; 
+            bottom: -80px; right: -80px; transform: rotate(10deg); animation-delay: 3s; 
         }
 
         @keyframes floatAstronaut {
-            0% {
-                transform: translateY(0px) rotate(var(--rot, -10deg));
-            }
-            100% {
-                transform: translateY(-25px) rotate(calc(var(--rot, -10deg) + 5deg));
-            }
+            0% { transform: translateY(0px) rotate(var(--rot, -10deg)); }
+            100% { transform: translateY(-25px) rotate(calc(var(--rot, -10deg) + 5deg)); }
+            
         }
-
-        /* --- Styling Pop-Up (Modal) --- */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
-            z-index: 100; justify-content: center; align-items: center;
+        body {
+            background: linear-gradient(135deg, #07070b 0%, #11111a 50%, #171720 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden; /* Ubah dari overflow-x: hidden menjadi overflow: hidden agar tidak bisa di-scroll */
         }
-        .modal-content {
-            background: #1a1a1a; color: white; padding: 40px; border-radius: 12px;
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #333; max-width: 400px; position: relative;
-            animation: popIn 0.3s ease-out;
-        }
-        .modal-content h3 { margin-bottom: 15px; color: #ff4757; }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #aaa; transition: color 0.3s; }
-        .close-btn:hover { color: white; }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
+    <!-- LAYER PRELOADER LOADING -->
+    <div id="preloader">
+        <img src="image_c4e707.png" alt="Loading Logo" class="preloader-logo">
+        <div class="loader-line"></div>
+        <div class="loading-text">LOADING...</div>
+    </div>
+
     <!-- Animasi Latar Belakang -->
     <div class="static-stars"></div>
     
-    <!-- Bintang (+) dengan Animasi Floating -->
     <div class="bright-star bs-1" style="--s: 1.3;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
     <div class="bright-star bs-2" style="--s: 0.9;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
     <div class="bright-star bs-3" style="--s: 1.1;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
     <div class="bright-star bs-4" style="--s: 0.6;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
     
-    <!-- Bulan Berputar -->
     <div class="moon"></div>
 
     <div class="shooting-star-container">
@@ -350,21 +356,23 @@
         <div class="snow s4"></div><div class="snow s5"></div>
     </div>
 
-    <!-- Elemen Gambar Astronot Jumbo (760px) di Kiri & Kanan Bawah -->
+    <!-- Elemen Gambar Astronot -->
     <img src="WiSE (1).jpg" alt="Astronot Kiri" class="astronaut astronaut-left" style="--rot: -10deg;" onerror="this.style.display='none'">
     <img src="WiSE (2).jpg" alt="Astronot Kanan" class="astronaut astronaut-right" style="--rot: 10deg;" onerror="this.style.display='none'">
 
     <!-- Header / Navigasi -->
-    <header>
-        <img src="logo.jpg" alt="Logo WiSE" class="logo-img" onclick="showPopup()">
+    <header id="home">
+        <a href="index.html">
+            <img src="logo.png" alt="Logo WiSE" class="logo-img">
+        </a>
         <nav class="main-nav">
-            <a onclick="showPopup()">Home</a>
-            <a onclick="showPopup()">About</a>
-            <a onclick="showPopup()">Price</a>
-            <a onclick="showPopup()">Contact</a>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="price.html">Price</a>
+            <a href="contact.html">Contact</a>
         </nav>
         <nav class="login-nav">
-            <a onclick="showPopup()">Login</a>
+            <a href="login.html">Login</a>
         </nav>
     </header>
 
@@ -372,63 +380,50 @@
     <div class="hero-section">
         <h1>Selamat Datang di WiSE</h1>
         <p class="subtitle">Building Reliability into Every Line of Code.</p>
+        <p class="subtitle">When Yh.</p>
         
         <div class="services-container">
             <!-- Kartu 1: Robotics -->
-            <div class="service-card" onclick="showPopup()">
+            <div class="service-card" onclick="window.location.href='pesanan.html'">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 <h3>Robotics</h3>
+                <p class="card-desc">Inovasi cerdas di bidang otomasi dan robotika untuk efisiensi masa depan.</p>
             </div>
 
             <!-- Kartu 2: Website -->
-            <div class="service-card" onclick="showPopup()">
+            <div class="service-card" onclick="window.location.href='pesanan.html'">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="2" y1="12" x2="22" y2="12"></line>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                 </svg>
                 <h3>Website</h3>
+                <p class="card-desc">Pengembangan solusi digital interaktif yang fungsional dan terpercaya.</p>
             </div>
 
-            <!-- Kartu 3: Design -->
-            <div class="service-card" onclick="showPopup()">
+           
+            <div class="service-card" onclick="window.location.href='pesanan.html'">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                 </svg>
                 <h3>Design</h3>
+                <p class="card-desc">Visualisasi ide dan antarmuka pengguna yang estetis dan berpusat pada kenyamanan.</p>
             </div>
         </div>
     </div>
 
-    <!-- Pop-Up Modal -->
-    <div class="modal-overlay" id="popupModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closePopup()">&times;</span>
-            <h3>Oops!</h3>
-            <p>Halaman Belum Tersedia karena Website masih <strong>On progress</strong>.</p>
-        </div>
-    </div>
 
-    <!-- Script JavaScript untuk Pop-Up -->
     <script>
-        const modal = document.getElementById('popupModal');
-
-        function showPopup() {
-            modal.style.display = 'flex';
-        }
-
-        function closePopup() {
-            modal.style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(function() {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 2500); 
+        });
     </script>
 
 </body>

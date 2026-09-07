@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Pesanan - WiSE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #07070b 0%, #11111a 50%, #171720 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* --- Latar Belakang Bintang Statis --- */
+        .static-stars {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+            background-image: 
+                radial-gradient(1.5px 1.5px at 10% 20%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 30% 40%, #e0e0ff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50% 10%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 70% 60%, #c0c0ff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 90% 30%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 20% 80%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 80% 80%, #d0d0ff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40% 70%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 60% 90%, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            opacity: 0.8;
+        }
+
+        .bright-star {
+            position: absolute; width: 150px; height: 150px; z-index: 0;
+            pointer-events: none; animation: floatStar 5s ease-in-out infinite alternate;
+        }
+        .bright-star .core {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 6px; height: 6px; background: #ffffff; border-radius: 50%;
+            box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9), 0 0 30px 10px rgba(180, 200, 255, 0.6);
+        }
+        .bright-star .rays {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 1px; background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
+            box-shadow: 0 0 4px rgba(255,255,255,0.4);
+        }
+        .bright-star .rays::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: inherit; transform: rotate(90deg); }
+        .bright-star .diagonal-rays { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(45deg); width: 40%; height: 1px; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%); }
+        .bright-star .diagonal-rays::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: inherit; transform: rotate(90deg); }
+        
+        .bs-1 { top: 10%; left: 15%; transform: scale(1.3); animation-delay: 0s; }
+        .bs-2 { top: 60%; left: 75%; transform: scale(0.9); animation-delay: 1.5s; }
+
+        @keyframes floatStar {
+            0% { transform: translateY(0px) scale(var(--s, 1)); }
+            100% { transform: translateY(-15px) scale(var(--s, 1)); }
+        }
+
+        .moon {
+            position: absolute; top: 5%; right: 10%; width: 150px; height: 150px; border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, transparent 0%, rgba(0,0,0,0.6) 80%),
+                radial-gradient(circle at 40% 60%, #444 0%, transparent 30%),
+                radial-gradient(circle at 70% 30%, #555 0%, transparent 40%),
+                radial-gradient(circle at 60% 70%, #333 0%, transparent 50%),
+                #888899; 
+            box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 255, 255, 0.15); 
+            z-index: 0; pointer-events: none; opacity: 0.9;
+            animation: rotateMoon 30s linear infinite;
+        }
+
+        @keyframes rotateMoon {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            position: relative; z-index: 10; display: flex; align-items: center;
+            padding: 20px 50px; background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-img { height: 50px; width: auto; cursor: pointer; border-radius: 6px; }
+        .main-nav { display: flex; gap: 30px; margin-left: 30px; }
+        .login-nav { margin-left: auto; display: flex; }
+        nav a { position: relative; padding: 8px 12px; color: #cccccc; text-decoration: none; font-size: 16px; font-weight: 500; transition: color 0.3s ease; cursor: pointer; }
+        nav a:hover { color: #ffffff; }
+
+        /* --- KOTAK FORMULIR PESANAN --- */
+        .container {
+            position: relative; z-index: 2;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        h1 { font-size: 2.3em; margin-bottom: 10px; color: #60efff; text-align: center; }
+        p.subtitle { text-align: center; color: #d1d1d1; margin-bottom: 30px; font-size: 0.95em; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 6px; color: #cccccc; font-weight: 500; font-size: 14px; }
+        input, select, textarea {
+            width: 100%; padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; color: white; font-size: 15px; outline: none; transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: #60efff; }
+        select option { background: #11111a; color: white; }
+        textarea { resize: vertical; height: 100px; }
+
+        .submit-btn {
+            width: 100%; padding: 12px; background: #2563eb; color: white; border: none;
+            border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s, transform 0.2s;
+        }
+        .submit-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        .back-container { margin-top: 20px; text-align: center; }
+        .back-link { color: #aaaaaa; text-decoration: none; font-size: 0.9em; transition: color 0.3s; }
+        .back-link:hover { color: white; }
+
+        /* --- POPUP PESANAN BELUM BERLAKU --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
+            z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1a1a1a; color: white; padding: 35px; border-radius: 16px;
+            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15); max-width: 420px; position: relative;
+            animation: popIn 0.3s ease-out;
+        }
+        .modal-content h3 { margin-bottom: 12px; color: #ff4757; font-size: 24px; }
+        .modal-content p { color: #d1d1d1; line-height: 1.6; font-size: 15px; margin-bottom: 20px; }
+        .close-popup-btn {
+            padding: 10px 25px; background: #2563eb; color: white; border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.3s;
+        }
+        .close-popup-btn:hover { background: #1d4ed8; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="static-stars"></div>
+    <div class="bright-star bs-1" style="--s: 1.3;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
+    <div class="bright-star bs-2" style="--s: 0.9;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
+    <div class="moon"></div>
+
+    <header>
+        <a href="index.html"><img src="logo.png" alt="Logo WiSE" class="logo-img"></a>
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="price.html">Price</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <nav class="login-nav">
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Formulir Pemesanan</h1>
+        <p class="subtitle">Lengkapi data diri dan rancangan proyek Anda di bawah ini.</p>
+
+        <!-- Formulir Pemesanan -->
+        <form id="orderForm" onsubmit="showOrderPopup(event)">
+            <div class="form-group">
+                <label>Nama</label>
+                <input type="text" placeholder="Masukkan nama lengkap" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="nama@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>No WA</label>
+                <input type="tel" placeholder="08xxxxxxxxxx" required>
+            </div>
+            <div class="form-group">
+                <label>Rancangan</label>
+                <select required>
+                    <option value="" disabled selected>Pilih jenis rancangan</option>
+                    <option value="robotics">Robotics</option>
+                    <option value="website">Website</option>
+                    <option value="design">Design</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea placeholder="Jelaskan detail rancangan atau proyek Anda..." required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Kirim Pesanan</button>
+        </form>
+
+        <div class="back-container">
+            <a href="index.html" class="back-link">&larr; Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <!-- Pop-Up Peringatan Belum Berlaku -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-content">
+            <h3>Oops!</h3>
+            <p>Tindakan ini belum berlaku karena website belum sepenuhnya selesai.<br><br><strong>Mohon maaf atas ketidaknyamanan nya.</strong></p>
+            <button class="close-popup-btn" onclick="closeOrderPopup()">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- Script JavaScript untuk memunculkan pop-up khusus pemesanan -->
+    <script>
+        function showOrderPopup(event) {
+            event.preventDefault(); // Mencegah form terkirim beneran
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderPopup() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>

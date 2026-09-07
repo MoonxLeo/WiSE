@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - WiSE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #07070b 0%, #11111a 50%, #171720 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* --- Latar Belakang Bintang Statis --- */
+        .static-stars {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+            background-image: 
+                radial-gradient(1.5px 1.5px at 10% 20%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 30% 40%, #e0e0ff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50% 10%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 70% 60%, #c0c0ff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 90% 30%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 20% 80%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 80% 80%, #d0d0ff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40% 70%, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 60% 90%, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            opacity: 0.8;
+        }
+
+        .bright-star {
+            position: absolute; width: 150px; height: 150px; z-index: 0;
+            pointer-events: none; animation: floatStar 5s ease-in-out infinite alternate;
+        }
+        .bright-star .core {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 6px; height: 6px; background: #ffffff; border-radius: 50%;
+            box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9), 0 0 30px 10px rgba(180, 200, 255, 0.6);
+        }
+        .bright-star .rays {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 1px; background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
+            box-shadow: 0 0 4px rgba(255,255,255,0.4);
+        }
+        .bright-star .rays::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: inherit; transform: rotate(90deg); }
+        .bright-star .diagonal-rays { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(45deg); width: 40%; height: 1px; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%); }
+        .bright-star .diagonal-rays::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: inherit; transform: rotate(90deg); }
+        
+        .bs-1 { top: 10%; left: 15%; transform: scale(1.3); animation-delay: 0s; }
+        .bs-2 { top: 60%; left: 75%; transform: scale(0.9); animation-delay: 1.5s; }
+
+        @keyframes floatStar {
+            0% { transform: translateY(0px) scale(var(--s, 1)); }
+            100% { transform: translateY(-15px) scale(var(--s, 1)); }
+        }
+
+        .moon {
+            position: absolute; top: 5%; right: 10%; width: 150px; height: 150px; border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, transparent 0%, rgba(0,0,0,0.6) 80%),
+                radial-gradient(circle at 40% 60%, #444 0%, transparent 30%),
+                radial-gradient(circle at 70% 30%, #555 0%, transparent 40%),
+                radial-gradient(circle at 60% 70%, #333 0%, transparent 50%),
+                #888899; 
+            box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 255, 255, 0.15); 
+            z-index: 0; pointer-events: none; opacity: 0.9;
+            animation: rotateMoon 30s linear infinite;
+        }
+
+        @keyframes rotateMoon {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            position: relative; z-index: 10; display: flex; align-items: center;
+            padding: 20px 50px; background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-img { height: 50px; width: auto; cursor: pointer; border-radius: 6px; }
+        .main-nav { display: flex; gap: 30px; margin-left: 30px; }
+        .login-nav { margin-left: auto; display: flex; }
+        nav a { position: relative; padding: 8px 12px; color: #cccccc; text-decoration: none; font-size: 16px; font-weight: 500; transition: color 0.3s ease; cursor: pointer; }
+        nav a:hover { color: #ffffff; }
+
+        .container {
+            position: relative; z-index: 2;
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        h1 { font-size: 2.5em; margin-bottom: 10px; color: #60efff; text-align: center; }
+        p.subtitle { text-align: center; color: #d1d1d1; margin-bottom: 30px; }
+
+        .social-box-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px; padding: 25px; margin-bottom: 30px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .social-card {
+            display: flex; align-items: center; gap: 12px; padding: 12px 18px;
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+            text-decoration: none; color: #1f2937; font-weight: 600; font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .social-card svg { width: 24px; height: 24px; flex-shrink: 0; }
+        .social-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); background: #ffffff; }
+        .social-card.wa:hover { border-color: #25D366; color: #25D366; }
+        .social-card.ig:hover { border-color: #E1306C; color: #E1306C; }
+        .social-card.dc:hover { border-color: #5865F2; color: #5865F2; }
+        .social-card.tt:hover { border-color: #000000; color: #000000; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 6px; color: #cccccc; font-weight: 500; font-size: 14px; }
+        input, textarea {
+            width: 100%; padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; color: white; font-size: 15px; outline: none; transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus { border-color: #60efff; }
+        textarea { resize: vertical; height: 100px; }
+        .submit-btn {
+            width: 100%; padding: 12px; background: #2563eb; color: white; border: none;
+            border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s, transform 0.2s;
+        }
+        .submit-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+        .back-container { margin-top: 20px; text-align: center; }
+        .back-link { color: #aaaaaa; text-decoration: none; font-size: 0.9em; transition: color 0.3s; }
+        .back-link:hover { color: white; }
+
+        /* --- POPUP PERINGATAN --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
+            z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1a1a1a; color: white; padding: 35px; border-radius: 16px;
+            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15); max-width: 420px; position: relative;
+            animation: popIn 0.3s ease-out;
+        }
+        .modal-content h3 { margin-bottom: 12px; color: #ff4757; font-size: 24px; }
+        .modal-content p { color: #d1d1d1; line-height: 1.6; font-size: 15px; margin-bottom: 20px; }
+        .close-popup-btn {
+            padding: 10px 25px; background: #2563eb; color: white; border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.3s;
+        }
+        .close-popup-btn:hover { background: #1d4ed8; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="static-stars"></div>
+    <div class="bright-star bs-1" style="--s: 1.3;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
+    <div class="bright-star bs-2" style="--s: 0.9;"><div class="core"></div><div class="rays"></div><div class="diagonal-rays"></div></div>
+    <div class="moon"></div>
+
+    <header>
+        <a href="index.html"><img src="logo.png" alt="Logo WiSE" class="logo-img"></a>
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="price.html">Price</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <nav class="login-nav">
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Hubungi Kami</h1>
+        <p class="subtitle">Terhubung dengan sosial media kami atau kirimkan pesan langsung.</p>
+
+        <div class="social-box-container">
+            <a href="https://wa.me/6281234567890" target="_blank" class="social-card wa">
+                <svg fill="#25D366" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.198-.198.347-.764.967-.937 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                WhatsApp
+            </a>
+            <a href="https://instagram.com" target="_blank" class="social-card ig">
+                <svg fill="#E1306C" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                Instagram
+            </a>
+            <a href="https://discord.com" target="_blank" class="social-card dc">
+                <svg fill="#5865F2" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                Discord
+            </a>
+            <a href="https://tiktok.com" target="_blank" class="social-card tt">
+                <svg fill="#000000" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                TikTok
+            </a>
+        </div>
+
+        <form onsubmit="showPopup(event)">
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" placeholder="Masukkan nama Anda" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="nama@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Pesan</label>
+                <textarea placeholder="Tuliskan pesan atau detail proyek Anda..." required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Kirim Pesan</button>
+        </form>
+
+        <div class="back-container">
+            <a href="index.html" class="back-link">&larr; Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <!-- Pop-Up Peringatan -->
+    <div class="modal-overlay" id="warningModal">
+        <div class="modal-content">
+            <h3>Oops!</h3>
+            <p>Tindakan ini belum berlaku karena website belum sepenuhnya selesai.<br><br><strong>Mohon maaf atas ketidaknyamanan nya.</strong></p>
+            <button class="close-popup-btn" onclick="closePopup()">Mengerti</button>
+        </div>
+    </div>
+
+    <script>
+        function showPopup(event) {
+            event.preventDefault();
+            document.getElementById('warningModal').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('warningModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('warningModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>
